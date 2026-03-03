@@ -1,10 +1,19 @@
-#targetengine "footnoteNavigator_v4"
+#targetengine "session_FootnoteNav_v5"
 
 (function() {
     
+    // --- SINGLE INSTANCE CHECK ---
+    // If the window already exists and is valid, just bring it to front and exit.
+    if (typeof myFootnotePalette != "undefined" && myFootnotePalette instanceof Window) {
+        myFootnotePalette.show();
+        return;
+    }
+
     // --- UI CREATION ---
-    // Create the palette
-    var w = new Window("palette", "Footnote Nav", undefined, {closeButton: true});
+    // We assign the window to the global variable 'myFootnotePalette'
+    myFootnotePalette = new Window("palette", "Footnote Nav", undefined, {closeButton: true});
+    var w = myFootnotePalette; // Shortcut for easier coding below
+    
     w.spacing = 5;
     w.margins = 10;
 
@@ -56,7 +65,7 @@
 
     function doJump(index, notes) {
         if (index < 0 || index >= notes.length) {
-            return; // Silently fail at boundaries
+            return; 
         }
         var targetRef = notes[index];
         try {
@@ -105,12 +114,17 @@
         }
     });
 
-    // 4. ESCAPE Key (Close Window) - Zero UI footprint
+    // 4. ESCAPE Key (Close Window)
     w.addEventListener("keydown", function(k) {
         if (k.keyName == "Escape") {
             w.close();
         }
     });
+    
+    // 5. Cleanup when closed
+    w.onClose = function() {
+
+    };
 
     w.show();
 
